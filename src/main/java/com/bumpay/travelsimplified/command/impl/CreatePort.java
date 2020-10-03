@@ -10,6 +10,9 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.TranslationTextComponent;
 
+/**
+ * /createPort
+ */
 public class CreatePort {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
@@ -37,11 +40,8 @@ public class CreatePort {
                     System.out.println("Port name is " + StringArgumentType.getString(source, "name") + " with x-coordinate " + IntegerArgumentType.getInteger(source, "xCoordinate") + " and z-coordinate " + IntegerArgumentType.getInteger(source, "zCoordinate"));
                     return createPort(source.getSource(), StringArgumentType.getString(source, "name"), IntegerArgumentType.getInteger(source, "xCoordinate"), IntegerArgumentType.getInteger(source, "zCoordinate"));
                 })
-                )
-                )
-                )
+            )))
         );
-
     }
 
     /**
