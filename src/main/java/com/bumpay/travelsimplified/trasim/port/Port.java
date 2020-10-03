@@ -4,34 +4,76 @@ import com.bumpay.travelsimplified.trasim.dock.Dock;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Port {
-    private ServerPlayerEntity owner;
+    private UUID uuidOwner;
     private boolean isOpen = false;
     private String name;
     private int xCoordinate;
     private int zCoordinate;
     private ArrayList<Dock> docks = new ArrayList<Dock>();
 
-    public Port(ServerPlayerEntity owner, String name, int xCoordinate, int zCoordinate){
-        this.owner = owner;
+    /**
+     *
+     * @param uuidOwner The uuid of the player that owns the port
+     * @param name The name of the port
+     * @param xCoordinate The x-coordinate of the port location
+     * @param zCoordinate The z-coordinate of the port location
+     */
+    public Port(UUID uuidOwner, String name, int xCoordinate, int zCoordinate){
+        this.uuidOwner = uuidOwner;
         this.name = name;
         this.xCoordinate = xCoordinate;
         this.zCoordinate = zCoordinate;
     }
 
-    public boolean hasFreeDocks(){
+    /**
+     *
+     * @param uuidOwner The uuid of the player that owns the port
+     * @param name The name of the port
+     * @param xCoordinate The x-coordinate of the port location
+     * @param zCoordinate The z-coordinate of the port location
+     * @param isOpen If the port is opened for other players
+     * @param docks List of docks from port
+     */
+    public Port(UUID uuidOwner, String name, int xCoordinate, int zCoordinate, boolean isOpen, ArrayList<Dock> docks){
+        this.uuidOwner = uuidOwner;
+        this.name = name;
+        this.xCoordinate = xCoordinate;
+        this.zCoordinate = zCoordinate;
+        this.isOpen = isOpen;
+        this.docks = docks;
+    }
+
+    /**
+     * Checks if any dock of the port is not occupied
+     * @return
+     */
+    public boolean hasPossibleDocks(){
         for(Dock d : docks)
-            if(d.isUsed) return true;
+            //TODO check if ship fits inside dock
+            if(d.isUsed()) return true;
         return false;
     }
 
+    /**
+     * Adds a dock to the docks list
+     * @param dock Dock that will be added
+     */
+    public void addDock(Dock dock) { docks.add(dock); }
+
+    /**
+     * Opens or closes a port
+     * @param open
+     */
     public void setOpen(boolean open) {
         isOpen = open;
     }
 
-    public ServerPlayerEntity getOwner(){
-        return owner;
+    //GETTER
+    public UUID getUuidOwner(){
+        return uuidOwner;
     }
 
     public String getName(){

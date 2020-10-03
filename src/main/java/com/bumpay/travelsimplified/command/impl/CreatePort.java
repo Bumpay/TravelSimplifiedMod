@@ -5,86 +5,80 @@ import com.bumpay.travelsimplified.trasim.port.PortWorldSavedData;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.TranslationTextComponent;
 
 /**
- * /createPort
+ * Create Port command
  */
 public class CreatePort {
+    //ExceptionMessages
+    private static final SimpleCommandExceptionType PORT_NAME_EXISTS = new SimpleCommandExceptionType(new TranslationTextComponent("commands.create.port.port_name_exists"));
+    private static final SimpleCommandExceptionType TOO_FAR_AWAY = new SimpleCommandExceptionType(new TranslationTextComponent("commands.create.port.too_far_away"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(
-            //createPort
-            Commands.literal("createPort")
-                .executes(source -> {
-                    System.out.println("Called createPort with no arguments!");
-                    return createPort(source.getSource());
-                })
+    public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher) {
+        return Commands.literal("port")
                 .then(
-            //name
-            Commands.argument("name", StringArgumentType.string())
-                .executes(source -> {
-                    System.out.println("Port name is " + StringArgumentType.getString(source, "name"));
-                    return createPort(source.getSource(), StringArgumentType.getString(source, "name"));
-                })
-                .then(
-            //xCoordinate
-            Commands.argument("xCoordinate", IntegerArgumentType.integer())
-                .then(
-            //zCoordinate
-            Commands.argument("zCoordinate", IntegerArgumentType.integer())
-                .executes(source -> {
-                    System.out.println("Port name is " + StringArgumentType.getString(source, "name") + " with x-coordinate " + IntegerArgumentType.getInteger(source, "xCoordinate") + " and z-coordinate " + IntegerArgumentType.getInteger(source, "zCoordinate"));
-                    return createPort(source.getSource(), StringArgumentType.getString(source, "name"), IntegerArgumentType.getInteger(source, "xCoordinate"), IntegerArgumentType.getInteger(source, "zCoordinate"));
-                })
-            )))
-        );
+                        // trasim create port name
+                        Commands.argument("name", StringArgumentType.string()).executes(source -> {
+                            return createPort(source.getSource(), StringArgumentType.getString(source, "name"));
+                        })
+                                .then(
+                                        // trasim create port name x
+                                        Commands.argument("x", IntegerArgumentType.integer())
+                                                .then(
+                                                        // trasim create port x z
+                                                        Commands.argument("z", IntegerArgumentType.integer()).executes(source -> {
+                                                            return createPort(source.getSource(),
+                                                                    StringArgumentType.getString(source, "name"),
+                                                                    IntegerArgumentType.getInteger(source, "x"),
+                                                                    IntegerArgumentType.getInteger(source, "z"));
+                                                        })
+                                                )
+                                )
+                );
+
     }
 
     /**
-     * Tells the user how to use the /createPort command
-     * @param source
-     * @return Success-value
-     */
-    private static int createPort(CommandSource source){
-        source.sendFeedback(new TranslationTextComponent("commands.createPort"), true);
-        return 1;
-    }
-
-    /**
-     * Creates a port with a given name
+     * Creates a port with the given name at the players current position
      * @param source
      * @param name Name of the port
-     * @return Success-value
-     * @throws CommandSyntaxException
-     */
-    private static int createPort(CommandSource source, String name) throws CommandSyntaxException {
-        int playerPosX = (int)source.asPlayer().getPosX();
-        int playerPosZ = (int)source.asPlayer().getPosZ();
-        Port port = new Port(source.asPlayer(), name, playerPosX, playerPosZ);
-        PortWorldSavedData portWorldSavedData = PortWorldSavedData.get(source.asPlayer().getServerWorld());
-        portWorldSavedData.addPortToList(port, portWorldSavedData);
-        source.sendFeedback(new TranslationTextComponent("commands.createPort.name", name, playerPosX, playerPosZ), true);
-        return 1;
-    }
-
-    /**
-     * Create a port with a given name at the provided x- and z-coordinates
-     * @param source
-     * @param name Name of the port
-     * @param xCoordinate X-coordinate of the port
-     * @param zCoordinate Z-coordinate of the port
      * @return
      * @throws CommandSyntaxException
      */
-    private static int createPort(CommandSource source, String name, int xCoordinate, int zCoordinate) throws CommandSyntaxException {
-        Port port = new Port(source.asPlayer(), name, xCoordinate, zCoordinate);
+    public static int createPort(CommandSource source, String name) throws CommandSyntaxException {
+        int playerPosX = (int) source.asPlayer().getPosX();
+        int playerPosZ = (int) source.asPlayer().getPosZ();
+        Port port = new Port(source.asPlayer().getUniqueID(), name, playerPosX, playerPosZ);
         PortWorldSavedData portWorldSavedData = PortWorldSavedData.get(source.asPlayer().getServerWorld());
-        portWorldSavedData.addPortToList(port, portWorldSavedData);
-        source.sendFeedback(new TranslationTextComponent("commands.createPort.name.x.y", name , xCoordinate, zCoordinate), true);
+        if (!portWorldSavedData.addPortsToList(port, portWorldSavedData))
+            throw PORT_NAME_EXISTS.create();
+
+        source.sendFeedback(new TranslationTextComponent("commands.create.port.name", name, playerPosX, playerPosZ), true);
+        return 1;
+    }
+
+    /**
+     *
+     * @param source
+     * @param name Name of the port
+     * @param x X-coordinate of port location
+     * @param z Z-coordinate of port location
+     * @return
+     * @throws CommandSyntaxException
+     */
+    public static int createPort(CommandSource source, String name, int x, int z) throws CommandSyntaxException {
+        Port port = new Port(source.asPlayer().getUniqueID(), name, x, z);
+        PortWorldSavedData portWorldSavedData = PortWorldSavedData.get(source.asPlayer().getServerWorld());
+        if (!portWorldSavedData.addPortsToList(port, portWorldSavedData))
+            throw PORT_NAME_EXISTS.create();
+
+        source.sendFeedback(new TranslationTextComponent("commands.create.port.name.pos", name, x, z), true);
         return 1;
     }
 }

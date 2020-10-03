@@ -3,22 +3,35 @@ package com.bumpay.travelsimplified.trasim.ship;
 import com.bumpay.travelsimplified.trasim.port.Port;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.Vec3i;
+
+import java.util.UUID;
 
 public class Ship {
     String name;
-    ServerPlayerEntity owner;
-    MutableBoundingBox shipArea;
+    UUID uuidOwner;
+    //MutableBoundingBox shipArea;
+    Vec3i pos1, pos2;
     Port homePort;
 
-    public Ship(String name, ServerPlayerEntity owner, MutableBoundingBox shipArea, Port homePort){
+    /**
+     * Ship of a player
+     * @param name Name of the ship
+     * @param uuidOwner uuid of the player that owns the ship
+     * @param pos1 One corner of the ship area
+     * @param pos2 Other corner of the ship area
+     * @param homePort Homeport of the ship
+     */
+    public Ship(String name, UUID uuidOwner, Vec3i pos1, Vec3i pos2, Port homePort){
         this.name = name;
-        this.owner = owner;
-        this.shipArea = shipArea;
+        this.uuidOwner = uuidOwner;
+        this.pos1 = pos1;
+        this.pos2 = pos2;
         this.homePort = homePort;
     }
 
     /**
-     * Teleports the ship-schematic back into the homePort
+     * Calls the ship-schematic back into the homePort
      */
     public void toHomePort(){
 
@@ -26,9 +39,10 @@ public class Ship {
 
     /**
      * Travels to a port
+     * @param port The destination port
      */
-    public void travleTo(Port port){
-        if(port.isOpen() && port.hasFreeDocks()){
+    public void travelTo(Port port){
+        if(port.isOpen() && port.hasPossibleDocks()){
 
         }
     }

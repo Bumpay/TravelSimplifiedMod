@@ -4,8 +4,14 @@
   "item.trasim.port_license": "Port License",
   "block.trasim.steering_wheel": "Steering Wheel",
   "itemGroup.trasimTab": "Travel Simplified",
-  "commands.createPort": "You need to enter a name!",
-  "commands.createPort.name": "You created the Port %s at your position(x:%s, z:%s)!",
-  "commands.createPort.name.x": "You need to enter the z-coordinate!",
-  "commands.createPort.name.x.y": "Successfully created the Port %s at x:%s, z:%s"
+
+  "commands.create": "Choose what you want to create!",
+  "commands.create.port": "You need to enter a name!",
+  "commands.create.port.port_name_exists": "This name is already in use!",
+  "commands.create.port.too_far_away": "The port would be too far away from your position!",
+  "commands.create.port.name": "Created the Port \"%s\" at your position(x:%s, z:%s)!",
+  "commands.create.port.name.pos": "Created the Port \"%s\" at x:%s, z:%s!",
+  "commands.create.dock.port_not_exists": "The port does not exists!",
+  "commands.create.dock.port_too_far_away": "The port is too far away!",
+  "commands.create.dock.port.corner1.corner2": "Created and added the dock to \"%s\"!"
 }

@@ -5,7 +5,6 @@ import com.bumpay.travelsimplified.blocks.BlockItemBase;
 import com.bumpay.travelsimplified.blocks.SteeringWheel;
 import com.bumpay.travelsimplified.items.ItemBase;
 import com.bumpay.travelsimplified.items.PortLicense;
-import com.bumpay.travelsimplified.network.TraSimPacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -25,7 +24,6 @@ public class RegistryHandler {
     public static void init() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        TraSimPacketHandler.registerMessages();
     }
 
     //Items
