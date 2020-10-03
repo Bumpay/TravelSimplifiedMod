@@ -7,12 +7,12 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class PortWorldSavedData extends WorldSavedData {
 
     private static final String NAME = "TraSim_PortData";
-    public static List<Port> portList;
+    public static ArrayList<Port> portList = new ArrayList<Port>();
 
     public PortWorldSavedData() {
         super(NAME);

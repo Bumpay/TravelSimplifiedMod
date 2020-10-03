@@ -1,7 +1,5 @@
 package com.bumpay.travelsimplified.command.impl;
 
-import com.bumpay.travelsimplified.network.PacketCreatePort;
-import com.bumpay.travelsimplified.network.TraSimPacketHandler;
 import com.bumpay.travelsimplified.trasim.port.Port;
 import com.bumpay.travelsimplified.trasim.port.PortWorldSavedData;
 import com.mojang.brigadier.CommandDispatcher;
@@ -16,28 +14,32 @@ public class CreatePort {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
-                Commands.literal("createPort")
-                        .then(
-                                Commands.argument("name", StringArgumentType.string())
-                                        .executes(source -> {
-                                            System.out.println("Port name is " + StringArgumentType.getString(source, "name"));
-                                            return createPort(source.getSource(), StringArgumentType.getString(source, "name"));
-                                        })
-                                        .then(
-                                                Commands.argument("xCoordinate", IntegerArgumentType.integer())
-                                                        .then(
-                                                                Commands.argument("zCoordinate", IntegerArgumentType.integer())
-                                                                    .executes(source -> {
-                                                                        System.out.println("Port name is " + StringArgumentType.getString(source, "name") + " with x-coordinate " + IntegerArgumentType.getInteger(source, "xCoordinate") + " and z-coordinate " + IntegerArgumentType.getInteger(source, "zCoordinate"));
-                                                                        return createPort(source.getSource(), StringArgumentType.getString(source, "name"), IntegerArgumentType.getInteger(source, "xCoordinate"), IntegerArgumentType.getInteger(source, "zCoordinate"));
-                                                                    })
-                                                        )
-                                        )
-                        )
-                        .executes(source -> {
-                            System.out.println("Called createPort with no arguments!");
-                            return createPort(source.getSource());
-                        })
+            //createPort
+            Commands.literal("createPort")
+                .executes(source -> {
+                    System.out.println("Called createPort with no arguments!");
+                    return createPort(source.getSource());
+                })
+                .then(
+            //name
+            Commands.argument("name", StringArgumentType.string())
+                .executes(source -> {
+                    System.out.println("Port name is " + StringArgumentType.getString(source, "name"));
+                    return createPort(source.getSource(), StringArgumentType.getString(source, "name"));
+                })
+                .then(
+            //xCoordinate
+            Commands.argument("xCoordinate", IntegerArgumentType.integer())
+                .then(
+            //zCoordinate
+            Commands.argument("zCoordinate", IntegerArgumentType.integer())
+                .executes(source -> {
+                    System.out.println("Port name is " + StringArgumentType.getString(source, "name") + " with x-coordinate " + IntegerArgumentType.getInteger(source, "xCoordinate") + " and z-coordinate " + IntegerArgumentType.getInteger(source, "zCoordinate"));
+                    return createPort(source.getSource(), StringArgumentType.getString(source, "name"), IntegerArgumentType.getInteger(source, "xCoordinate"), IntegerArgumentType.getInteger(source, "zCoordinate"));
+                })
+                )
+                )
+                )
         );
 
     }
@@ -45,7 +47,7 @@ public class CreatePort {
     /**
      * Tells the user how to use the /createPort command
      * @param source
-     * @return
+     * @return Success-value
      */
     private static int createPort(CommandSource source){
         source.sendFeedback(new TranslationTextComponent("commands.createPort"), true);
@@ -56,7 +58,7 @@ public class CreatePort {
      * Creates a port with a given name
      * @param source
      * @param name Name of the port
-     * @return
+     * @return Success-value
      * @throws CommandSyntaxException
      */
     private static int createPort(CommandSource source, String name) throws CommandSyntaxException {

@@ -1,13 +1,9 @@
 package com.bumpay.travelsimplified.trasim.port;
 
 import com.bumpay.travelsimplified.trasim.dock.Dock;
-import com.google.gson.*;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Port {
     private ServerPlayerEntity owner;
@@ -15,29 +11,13 @@ public class Port {
     private String name;
     private int xCoordinate;
     private int zCoordinate;
-    private List<Dock> docks;
+    private ArrayList<Dock> docks = new ArrayList<Dock>();
 
     public Port(ServerPlayerEntity owner, String name, int xCoordinate, int zCoordinate){
         this.owner = owner;
         this.name = name;
         this.xCoordinate = xCoordinate;
         this.zCoordinate = zCoordinate;
-    }
-
-    public JsonObject toJsonObject() {
-        JsonObject jsonObject = new JsonObject();
-        return jsonObject;
-    }
-
-    public void addToPortList() {
-
-        Gson gson = new GsonBuilder().create();
-        try {
-            Writer writer = new FileWriter("../ports.json");
-            gson.toJson(this, writer);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
     }
 
     public boolean hasFreeDocks(){
@@ -70,5 +50,5 @@ public class Port {
         return isOpen;
     }
 
-    public List<Dock> getDocks() { return docks; }
+    public ArrayList<Dock> getDocks() { return docks; }
 }
