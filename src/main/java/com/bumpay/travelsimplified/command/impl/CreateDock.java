@@ -25,6 +25,7 @@ public class CreateDock {
     private static final SimpleCommandExceptionType PORT_TOO_FAR_AWAY = new SimpleCommandExceptionType(new TranslationTextComponent("commands.create.dock.port_too_far_away"));
 
     //Suggestions
+    //TODO add " around the ports name
     private static final SuggestionProvider<CommandSource> SUGGEST_PORT = (source, builder) -> ISuggestionProvider.suggest(PortWorldSavedData.getPortNameList(PortWorldSavedData.get(source.getSource().asPlayer().getServerWorld())).stream(), builder);
 
     public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher) {
