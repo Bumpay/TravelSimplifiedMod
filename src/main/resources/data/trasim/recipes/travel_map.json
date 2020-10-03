@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "   ",
+    "sms",
+    " c "
+  ],
+  "key":
+  {
+    "s":
+    {
+      "item": "minecraft:stick"
+    },
+    "m":
+    {
+      "item": "minecraft:empty_map"
+    },
+    "c":
+    {
+      "item": "minecraft:compass"
+    }
+  },
+  "result":
+  {
+    "item": "trasim:travel_map",
+    "count": 1
+  }
+}

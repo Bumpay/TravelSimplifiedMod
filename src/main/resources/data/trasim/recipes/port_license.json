@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients":
+  [
+    {
+      "item": "minecraft:writable_book"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:heart_of_the_sea"
+    }
+  ],
+  "result":
+  {
+    "item": "trasim:port_license",
+    "count": 1
+  }
+}

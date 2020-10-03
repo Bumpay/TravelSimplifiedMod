@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "sss",
+    "sis",
+    "sss"
+  ],
+  "key":
+  {
+    "s":
+    {
+      "item": "minecraft:stick"
+    },
+    "i":
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result":
+  {
+    "item": "trasim:steering_wheel",
+    "count": 1
+  }
+}
