@@ -1,0 +1,11 @@
+{
+  "item.trasim.travel_map": "Travel Map",
+  "item.trasim.measuring_tool": "Measuring Tool",
+  "item.trasim.port_license": "Port License",
+  "block.trasim.steering_wheel": "Steering Wheel",
+  "itemGroup.trasimTab": "Travel Simplified",
+  "commands.createPort": "You need to enter a name!",
+  "commands.createPort.name": "You created the Port %s at your position(x:%s, z:%s)!",
+  "commands.createPort.name.x": "You need to enter the z-coordinate!",
+  "commands.createPort.name.x.y": "Successfully created the Port %s at x:%s, z:%s"
+}
