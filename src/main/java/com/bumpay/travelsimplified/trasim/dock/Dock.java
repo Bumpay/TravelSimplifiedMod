@@ -1,7 +1,12 @@
 package com.bumpay.travelsimplified.trasim.dock;
 
+import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.renderer.FaceDirection;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.Rotations;
+
+//TODO add isFacing and docking site attribute
 
 public class Dock {
     private int id;
@@ -9,6 +14,7 @@ public class Dock {
     private boolean isUsed;
     private BlockPos pos1;
     private BlockPos pos2;
+
 
     /**
      * Docks are defined areas where a ship structure can land

@@ -2,6 +2,7 @@ package com.bumpay.travelsimplified.trasim.ship;
 
 import com.bumpay.travelsimplified.trasim.port.Port;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
