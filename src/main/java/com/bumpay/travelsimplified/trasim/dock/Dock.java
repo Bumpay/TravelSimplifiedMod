@@ -1,12 +1,14 @@
 package com.bumpay.travelsimplified.trasim.dock;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
 public class Dock {
+    private int id;
     private boolean isHomeDock;
     private boolean isUsed;
-    private Vec3i pos1;
-    private Vec3i pos2;
+    private BlockPos pos1;
+    private BlockPos pos2;
 
     /**
      * Docks are defined areas where a ship structure can land
@@ -15,7 +17,15 @@ public class Dock {
      * @param pos1 One corner of the dock area
      * @param pos2 Other corner of the dock area
      */
-    public Dock(boolean isHomeDock, boolean isUsed, Vec3i pos1, Vec3i pos2){
+    public Dock(boolean isHomeDock, boolean isUsed, BlockPos pos1, BlockPos pos2){
+        this.isHomeDock = isHomeDock;
+        this.isUsed = isUsed;
+        this.pos1 = pos1;
+        this.pos2 = pos2;
+    }
+
+    public Dock(int id, boolean isHomeDock, boolean isUsed, BlockPos pos1, BlockPos pos2){
+        this.id = id;
         this.isHomeDock = isHomeDock;
         this.isUsed = isUsed;
         this.pos1 = pos1;
@@ -31,12 +41,16 @@ public class Dock {
         return isUsed;
     }
 
-    public Vec3i getPos1() {
+    public BlockPos getPos1() {
         return pos1;
     }
 
-    public Vec3i getPos2() {
+    public BlockPos getPos2() {
         return pos2;
+    }
+
+    public int getId() {
+        return id;
     }
 
     //SETTER
@@ -44,15 +58,19 @@ public class Dock {
         isHomeDock = homeDock;
     }
 
-    public void setPos1(Vec3i pos1) {
+    public void setPos1(BlockPos pos1) {
         this.pos1 = pos1;
     }
 
-    public void setPos2(Vec3i pos2) {
+    public void setPos2(BlockPos pos2) {
         this.pos2 = pos2;
     }
 
     public void setUsed(boolean used) {
         isUsed = used;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

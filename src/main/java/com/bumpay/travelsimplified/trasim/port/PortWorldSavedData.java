@@ -1,8 +1,10 @@
 package com.bumpay.travelsimplified.trasim.port;
 
 import com.bumpay.travelsimplified.trasim.dock.Dock;
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
@@ -10,13 +12,13 @@ import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class PortWorldSavedData extends WorldSavedData {
 
     private static final String NAME = "TraSim_PortData";
-    private static ArrayList<Port> portList = new ArrayList<Port>();
-    private static ArrayList<Integer> portHash = new ArrayList<>();
+    private static HashMap<Integer, Port> portHashMap = new HashMap<>();
 
     /**
      * Handles port-data in world-data
@@ -43,22 +45,22 @@ public class PortWorldSavedData extends WorldSavedData {
                 CompoundNBT dockNBT = listDocks.getCompound(i);
 
                 Dock dock = new Dock(
+                        dockNBT.getInt("id"),
                         dockNBT.getBoolean("isHomedock"),
                         dockNBT.getBoolean("isUsed"),
-                        new Vec3i(dockNBT.getIntArray("pos1")[0], dockNBT.getIntArray("pos1")[1], dockNBT.getIntArray("pos1")[2]),
-                        new Vec3i(dockNBT.getIntArray("pos2")[0], dockNBT.getIntArray("pos2")[1], dockNBT.getIntArray("pos2")[2]));
+                        new BlockPos(dockNBT.getIntArray("pos1")[0], dockNBT.getIntArray("pos1")[1], dockNBT.getIntArray("pos1")[2]),
+                        new BlockPos(dockNBT.getIntArray("pos2")[0], dockNBT.getIntArray("pos2")[1], dockNBT.getIntArray("pos2")[2]));
                 docks.add(dock);
             }
 
             Port port = new Port(
                     new UUID(portNBT.getLong("uuidM"), portNBT.getLong("uuidL")),
                     portNBT.getString("name"),
-                    portNBT.getInt("x"),
-                    portNBT.getInt("z"),
+                    new BlockPos(portNBT.getIntArray("pos")[0], portNBT.getIntArray("pos")[1], portNBT.getIntArray("pos")[2]),
                     portNBT.getBoolean("isOpen"),
                     docks);
 
-            portList.add(port);
+            portHashMap.put(port.getName().hashCode(), port);
         }
     }
 
@@ -68,14 +70,13 @@ public class PortWorldSavedData extends WorldSavedData {
         ListNBT portsListNBT = new ListNBT();
         compound.put("ports", portsListNBT);                                                                            //-NBT_List "ports"
 
-        for (Port p:portList){
+        for (Port p: portHashMap.values()){
             CompoundNBT portNBT = new CompoundNBT();                                                                    //--NBT_Compound "a single port"
             portNBT.putLong("uuidL", p.getUuidOwner().getLeastSignificantBits());                                       //---NBT_Long "uuidL"
             portNBT.putLong("uuidM", p.getUuidOwner().getMostSignificantBits());                                        //---NBT_Long "uuidM"
             portNBT.putBoolean("isOpen", p.isOpen());                                                                   //---NBT_Bool "isOpen"
             portNBT.putString("name", p.getName());                                                                     //---NBT_String "name"
-            portNBT.putInt("x", p.getXCoordinate());                                                                    //---NBT_Int "x"
-            portNBT.putInt("z", p.getZCoordinate());                                                                    //---NBT_Int "z"
+            portNBT.putIntArray("pos", new int[]{p.getPos().getX(), p.getPos().getY(), p.getPos().getZ()});                                                                   //---NBT_Int "z"
 
             ListNBT docksListNBT = new ListNBT();
             portNBT.put("docks", docksListNBT);                                                                         //---NBT_List "docks"
@@ -83,6 +84,7 @@ public class PortWorldSavedData extends WorldSavedData {
             for (Dock d:p.getDocks())
             {
                 CompoundNBT dockNBT = new CompoundNBT();                                                                //----NBT_Compound "a single dock"
+                dockNBT.putInt("id", d.getId());
                 dockNBT.putBoolean("isHomeDock", d.isHomeDock());                                                       //----NBT_Bool "isHomeDock"
                 dockNBT.putBoolean("isUsed", d.isUsed());                                                               //----NBT_Bool "isUsed"
                 dockNBT.putIntArray("pos1", new int[]{d.getPos1().getX(), d.getPos1().getY(), d.getPos1().getZ()});     //----NBT_Int[] "pos1"
@@ -114,24 +116,21 @@ public class PortWorldSavedData extends WorldSavedData {
      * @param instance Instance of the PortWorldSavedData
      * @return
      */
-    public static boolean addPortsToList(Port port, PortWorldSavedData instance){
-        for (Port p:portList)
-        {
-            portHash.add(p.getName().hashCode());
-        }
-        if(portHash.contains(port.getName().hashCode()))
+    public static boolean addPortToList(Port port, PortWorldSavedData instance){
+        if(portHashMap.containsKey(port.getName().hashCode()))
         {
             return false;
         }
-        portList.add(port);
+        portHashMap.put(port.getName().hashCode(), port);
         instance.markDirty();
 
         return true;
     }
 
-    public static ArrayList<Port> getPortList(PortWorldSavedData instance) {
+    public static HashMap<Integer, Port> getPortHashMap(PortWorldSavedData instance) {
         instance.read(new CompoundNBT());
-        return portList;
+
+        return portHashMap;
     }
 
     /**
@@ -139,12 +138,14 @@ public class PortWorldSavedData extends WorldSavedData {
      * @param instance Instance of the PortWorldSavedData
      * @return
      */
-    public static ArrayList<String> getPortNameList(PortWorldSavedData instance) {
+    public static ArrayList<String> getPortNameListByUuid(UUID uuid, PortWorldSavedData instance) {
         instance.read(new CompoundNBT());
+
         ArrayList<String> portNames = new ArrayList<>();
-        for (Port p: portList)
+        for (Port p: portHashMap.values())
         {
-            portNames.add(p.getName());
+            if(p.getUuidOwner().equals(uuid))
+                portNames.add(p.getName());
         }
         return portNames;
     }
@@ -157,14 +158,33 @@ public class PortWorldSavedData extends WorldSavedData {
      * @return
      */
     public static boolean addDockToPort(Dock dock, String port, PortWorldSavedData instance) {
-        int i = getPortNameList(instance).indexOf(port);
-        portList.get(i).addDock(dock);
+        portHashMap.get(port.hashCode()).addDock(dock);
+        dock.setId(portHashMap.get(port.hashCode()).getDockId(true));
         //TODO check if too far away from port and if return false
 
         instance.markDirty();
         return true;
     }
 
-    public static ArrayList<Integer> getPortHash() { return portHash; }
+    public static HashMap<Integer, Port> getPortsOfPlayer(UUID uuid, PortWorldSavedData instance){
+        instance.read(new CompoundNBT());
+
+        HashMap<Integer, Port> ports = new HashMap<>();
+        for(Port p: portHashMap.values()){
+            if(p.getUuidOwner().equals(uuid))
+                ports.put(p.getName().hashCode(), p);
+        }
+        return ports;
+    }
+
+    public static boolean deletePort(String portName, PortWorldSavedData instance){
+        instance.read(new CompoundNBT());
+        if(!portHashMap.containsKey(portName.hashCode()))
+           return false;
+
+        portHashMap.remove(portName.hashCode());
+        instance.markDirty();
+        return true;
+    }
 }
 
