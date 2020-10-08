@@ -12,8 +12,10 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.server.command.EnumArgument;
 
 /**
  * Create Dock command
@@ -34,11 +36,20 @@ public class CreateDock {
                                         Commands.argument("pos1", BlockPosArgument.blockPos())
                                                 .then(
                                                         Commands.argument("pos2", BlockPosArgument.blockPos())
-                                                                .executes(source -> createDock(source.getSource(),
-                                                                        StringArgumentType.getString(source, "portName"),
-                                                                        BlockPosArgument.getBlockPos(source, "pos1"),
-                                                                        BlockPosArgument.getBlockPos(source, "pos2"))
+                                                                .then(
+                                                                        Commands.argument("isFacing", EnumArgument.enumArgument(Direction.class))
+                                                                        .then(
+                                                                                Commands.argument("dockingDirection", EnumArgument.enumArgument(Direction.class))
+                                                                                        .executes(source -> createDock(source.getSource(),
+                                                                                        StringArgumentType.getString(source, "portName"),
+                                                                                        BlockPosArgument.getBlockPos(source, "pos1"),
+                                                                                        BlockPosArgument.getBlockPos(source, "pos2"),
+                                                                                        source.getArgument("isFacing", Direction.class),
+                                                                                        source.getArgument("dockingDirection", Direction.class))
+                                                                                )
+                                                                        )
                                                                 )
+
                                                 )
                                 )
                 );
@@ -53,7 +64,7 @@ public class CreateDock {
      * @return
      * @throws CommandSyntaxException
      */
-    private static int createDock(CommandSource source, String portName, BlockPos pos1, BlockPos pos2) throws CommandSyntaxException {
+    private static int createDock(CommandSource source, String portName, BlockPos pos1, BlockPos pos2, Direction isFaxing, Direction dockingDirection) throws CommandSyntaxException {
         PortWorldSavedData instance = PortWorldSavedData.get(source.asPlayer().getServerWorld());
         Port port = instance.getPortsOfPlayer(source.asPlayer().getUniqueID(), instance).get(portName.hashCode());
         if(!source.asPlayer().getPosition().withinDistance(port.getPos(), 50d))
