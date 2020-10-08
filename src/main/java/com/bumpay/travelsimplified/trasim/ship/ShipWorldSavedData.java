@@ -4,6 +4,7 @@ import com.bumpay.travelsimplified.trasim.port.Port;
 import com.bumpay.travelsimplified.trasim.port.PortWorldSavedData;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
@@ -52,12 +53,15 @@ public class ShipWorldSavedData extends WorldSavedData {
             
             Port port = new Port();
             port.read(shipNBT.getCompound("port"));
-            
+
+            Direction direction = Direction.byHorizontalIndex(shipNBT.getInt("directionEnum"));
+
             Ship ship = new Ship(
                     shipNBT.getString("name"),
                     new UUID(shipNBT.getLong("uuidM"), shipNBT.getLong("uuidL")),
                     port,
-                    template);
+                    template,
+                    direction);
 
             shipHashMap.put(ship.getName().hashCode(), ship);
         }
@@ -75,6 +79,7 @@ public class ShipWorldSavedData extends WorldSavedData {
             shipNBT.putString("name", s.getName());
             shipNBT.putLong("uuidL", s.getUuidOwner().getLeastSignificantBits());
             shipNBT.putLong("uuidM", s.getUuidOwner().getMostSignificantBits());
+            shipNBT.putInt("directionEnum", s.getDirection().getIndex());
 
             CompoundNBT portNBT = new CompoundNBT();
             s.getHomePort().writeToNBT(portNBT);

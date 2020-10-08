@@ -56,6 +56,15 @@ public class TraSimCommands {
                         .then(
                                 CallShip.register(dispatcher)
                         )
+                .then(
+                        Commands.literal("edit").executes(source -> create(source.getSource()))
+                        .then(
+                                EditDock.register(dispatcher)
+                        )
+                        .then(
+                                EditPort.register(dispatcher)
+                        )
+                )
                 //TODO create port literal
                 //TODO add close command to port
                 //TODO add list command to port

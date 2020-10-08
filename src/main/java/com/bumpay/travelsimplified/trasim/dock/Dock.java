@@ -1,7 +1,7 @@
 package com.bumpay.travelsimplified.trasim.dock;
 
-import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.FaceDirection;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Rotations;
@@ -10,11 +10,14 @@ import net.minecraft.util.math.Rotations;
 
 public class Dock {
     private int id;
+    private int depth;
     private boolean isHomeDock;
     private boolean isUsed;
     private BlockPos pos1;
     private BlockPos pos2;
-
+    private BlockPos landingPos;
+    private Direction direction;
+    private Direction dockingSide;
 
     /**
      * Docks are defined areas where a ship structure can land
@@ -38,6 +41,12 @@ public class Dock {
         this.pos2 = pos2;
     }
 
+    public BlockPos setDockingPos(BlockPos posIn){
+        BlockPos dockingPos = posIn;
+
+        return dockingPos;
+    }
+
     //GETTER
     public boolean isHomeDock() {
         return isHomeDock;
@@ -55,8 +64,20 @@ public class Dock {
         return pos2;
     }
 
+    public BlockPos getLandingPos() {
+        return landingPos;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public Direction getDockingSide() {
+        return dockingSide;
     }
 
     //SETTER
@@ -78,5 +99,9 @@ public class Dock {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setDockingSide(Direction dockingSide) {
+        this.dockingSide = dockingSide;
     }
 }
